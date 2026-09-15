@@ -5,6 +5,10 @@ export type CartItem = {
 }
 
 export function calculateSubtotal(items: CartItem[]): number{
+    // throw error if cart item price is negative
+    if(items.some(item => item.price < 0)){
+        throw new Error("Cart item price may not be negative!");
+    }
     return parseFloat(
         items.reduce((n, item) => n + (item.price * item.count), 0).toFixed(2)
     )
@@ -31,6 +35,10 @@ export function updateQuantity(cart: CartItem[], id: string, quantity: number): 
 }
 
 export function applyTieredDiscount(subtotal: number, quantity: number): number{
+    // throw error if subtotal is negative
+    if(subtotal < 0){
+        throw new Error("subtotal may not be negative!");
+    }
     // Always round quantity up to the next highest number as a form of defensive programming.
     const amount: number = Math.ceil(quantity);
     let result: number = subtotal;

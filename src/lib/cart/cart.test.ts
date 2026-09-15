@@ -25,6 +25,12 @@ test('keeps correct rounding when a drifting item is combined with clean items',
     expect(calculateSubtotal([cartItem1, cartItem2, cartItem3])).toBe(27.86);
 });
 
+test("throw error if cart item contains negative price", () => {
+    expect(() => {
+        calculateSubtotal([{ id: "1", price: -5, count: 1}, cartItem1]);
+    }).toThrow();
+});
+
 
 // Tests for updateQuantity function
 test('Updating a cart item to quantity of 0 removes it from the cartItem array', () => {
@@ -79,4 +85,10 @@ test('applies 10% discount at the lower edge of the third tier (quantity 10)', (
 
 test('rounds result correctly with no discount within the first tier (quantity 2)', () => {
     expect(applyTieredDiscount(19.995, 2)).toBe(20.00);
+});
+
+test("throw error if subtotal is negative", () => {
+    expect(() => {
+        applyTieredDiscount(-100, 2);
+    }).toThrow();
 });
