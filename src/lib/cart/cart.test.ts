@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
-import { applyTieredDiscount, calculateSubtotal, formatCurrency, updateQuantity } from "./cart";
-import { CartItem } from "./cart";
+import { applyTieredDiscount, calculateSubtotal, formatCurrency, updateQuantity } from "@/lib/cart";
+import { CartItem } from "@/lib/cart";
 
 const cartItem1:CartItem = { id: "1", price: 12.99, count: 1 };
 const cartItem2:CartItem = { id: "2", price: 7.00, count: 2 };
