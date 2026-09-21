@@ -24,6 +24,8 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## Testing
 
+The tests are performed using React Testing Library and MSW.
+
 run once:
 
 ```bash

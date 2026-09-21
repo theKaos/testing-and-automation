@@ -1,29 +1,41 @@
 import { useState } from "react";
 
+// helper function to check correct address input field
+export function getAddressInput(addressField: Element | RadioNodeList | null) {
+    const addressInput = addressField;
+
+    if (!(addressInput instanceof HTMLInputElement)) {
+        return null;
+    }
+
+    return addressInput;
+}
+
 export function CheckoutForm(){
 
     // handle for address field Errors
     const [addressError, setAddressError] = useState("");
+    const [successfullyCalled, setSuccessfullyCalled] = useState(false);
+    const [submitErrorMessage, setSubmitErrorMessage] = useState("");
 
-    function submitForm(e: React.SubmitEvent) {
+    async function submitForm(e: React.SubmitEvent) {
         e.preventDefault();
 
         const form = e.currentTarget as HTMLFormElement;
         const formData = new FormData(form);
 
-        
         const addressValue = formData.get("address");
         // name and payment not used yet
         //const nameValue = formData.get("name");
         //const paymentValue = formData.get("payment");
 
         const addressPattern = /^\p{L}+(?:[ -]\p{L}+)* \d+[a-zA-Z]?$/u;
-        const addressInput = form.elements.namedItem("address");
+        const addressInput = getAddressInput(form.elements.namedItem("address"));
 
-        // address field must be included
-        if (!(addressInput instanceof HTMLInputElement)) {
-            throw new Error("address field is missing!");
-        }
+        if (addressInput === null) {
+            setSubmitErrorMessage("Die Adresse ist ungültig!");
+            return;
+        }        
 
         // check address field if street and house number are included correctly
         if (typeof addressValue !== "string" || !addressPattern.test(addressValue)) {
@@ -34,8 +46,31 @@ export function CheckoutForm(){
         }
 
         setAddressError("");
-        // return a success alert for now
-        alert("Deine Bestellung wurde erfolgreich aufgegeben!")
+
+        try{
+            const response = await fetch("/api/checkout", {
+                method: "POST",
+                body: JSON.stringify(Object.fromEntries(formData)),
+            });
+            
+            // Server Error
+            if(!response.ok){
+                if(response.status >= 500){
+                    setSubmitErrorMessage("Der Server ist momentan nicht verfügbar.");
+                }else{
+                    setSubmitErrorMessage("Die Bestellung konnte nicht verarbeitet werden.");
+                }
+                return;
+            }
+
+            const result = await response.json();
+            setSuccessfullyCalled(true);
+            return result;
+        }catch{
+            // Network Error
+            setSubmitErrorMessage("Checkout fehlgeschlagen: Bitte prüfe deine Verbindung.");
+        }
+
     }
 
     return(
@@ -69,6 +104,14 @@ export function CheckoutForm(){
             <div>
                 <button type="submit">Absenden</button>
             </div>
+
+            {successfullyCalled && 
+                <div role="status">Bestellung erhalten!</div>
+            }
+
+            {submitErrorMessage &&
+                <div role="alert">{submitErrorMessage}</div>
+            }
 
         </form>
     )
