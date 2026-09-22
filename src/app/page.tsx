@@ -1,7 +1,16 @@
 //import Image from "next/image";
 
-export default function Home() {
+import ProductList from "@/components/ProductList";
+import { getProducts } from "@/lib/products";
+
+export default async function Home() {
+
+  const products = await getProducts();
+
   return (
-    <div></div>
+    <div>
+      <ProductList products={products} />
+    </div>
   );
 }
+

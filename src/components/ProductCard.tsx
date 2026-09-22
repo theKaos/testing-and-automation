@@ -1,19 +1,21 @@
+"use client";
 import { formatCurrency } from "@/lib/cart";
+import { Product } from "@/lib/products";
 
-export type ProductCardProps = {
-    name: string;
-    price: number;
-    onAddToCart: () => void;
-}
+export function ProductCard(product: Product){
+    
+    function onAddToCart(product: Product) {
+        // placeholder function till connection is enabled
+        console.log(`Produkt Nr. ${product.id} in Warenkorb gelegt`);
+    }
 
-export function ProductCard(product: ProductCardProps){
     //only show products wit a price above 0;
     if(product.price > 0){
         return(
             <div>
                 <h4>{product.name}</h4>
                 <span>{formatCurrency(product.price)}</span>
-                <button onClick={product.onAddToCart}>In den Warenkorb</button>
+                <button onClick={()=>onAddToCart(product)}>In den Warenkorb</button>
             </div>
         );
     }else{

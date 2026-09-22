@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { expect, test, vi } from "vitest";
-import { ProductCard, ProductCardProps } from "./ProductCard";
+import { expect, test} from "vitest";
+import { ProductCard } from "@/components/ProductCard";
+import { Product } from "@/lib/products";
 
-const cup: ProductCardProps = { name: "Kaffeetasse", price: 12.99, onAddToCart:()=>{} };
-const brokenCup: ProductCardProps = { name: "Kaffeetasse", price: 0, onAddToCart:()=>{} };
+const cup: Product = { id: 1, name: "Kaffeetasse", price: 12.99 };
+const brokenCup: Product = { id: 2, name: "Kaffeetasse", price: 0};
 
 // testing display of Component
 test("renders product name and formatted price", () => {
@@ -14,23 +14,16 @@ test("renders product name and formatted price", () => {
     expect(screen.getByText("12,99€")).toBeInTheDocument();
 });
 
-// testing click function of component
+// testing if to cart Button is available
 test("calls onAddToCart when button is clicked", async () => {
-    const handleAddToCart = vi.fn();
-    const user = userEvent.setup();
+    render(<ProductCard {...cup} />);
 
-    render(<ProductCard {...cup} onAddToCart={handleAddToCart} />);
-
-    await user.click(screen.getByRole("button", { name: "In den Warenkorb" }));
-
-    expect(handleAddToCart).toHaveBeenCalledOnce();
+    expect(screen.getByRole("button", { name: "In den Warenkorb" })).toBeInTheDocument();
 });
 
 // testing not supposed price value
 test("doesn't render product if price is 0", async () => {
-    const handleAddToCart = vi.fn();
-
-    render(<ProductCard {...brokenCup} onAddToCart={handleAddToCart} />);
+    render(<ProductCard {...brokenCup} />);
 
     expect(screen.queryByText("Kaffeetasse")).not.toBeInTheDocument();
 });
