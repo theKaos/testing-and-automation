@@ -8,11 +8,13 @@ const eslintConfig = defineConfig([
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
+    // Prefixed with "**/" so a stray nested build output (e.g. a duplicated
+    // "storefront/.next") is ignored too, not just one directly at the project root.
+    "**/.next/**",
+    "**/out/**",
+    "**/build/**",
     "next-env.d.ts",
-    "coverage/**",
+    "**/coverage/**",
     "public/mockServiceWorker.js"
   ]),
 ]);
