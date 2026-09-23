@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test, vi } from "vitest";
 import { Product } from "@/lib/products";
-import ProductList from "./ProductList";
+import ProductList from "@/components/ProductList";
 
 const products: Product[] = [{
                     id: 1,

@@ -27,3 +27,14 @@ export async function getProducts(): Promise<Product[]>{
         }, 3000);
     });
 }
+
+export async function getProduct(id: number): Promise<Product | undefined> {
+    // Temporary Solution: load products from getProducts function till real Backend solution is build
+    const products = await getProducts();
+    
+    return new Promise((resolve) => {
+        resolve(products.find(product => {
+            return product.id === id;
+        }));
+    });
+}

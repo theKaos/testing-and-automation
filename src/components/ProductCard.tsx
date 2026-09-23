@@ -1,6 +1,7 @@
 "use client";
 import { formatCurrency } from "@/lib/cart";
 import { Product } from "@/lib/products";
+import Link from "next/link";
 
 export function ProductCard(product: Product){
     
@@ -16,6 +17,7 @@ export function ProductCard(product: Product){
                 <h4>{product.name}</h4>
                 <span>{formatCurrency(product.price)}</span>
                 <button onClick={()=>onAddToCart(product)}>In den Warenkorb</button>
+                <Link href={`/products/${product.id}`}>Produktdetails</Link>
             </div>
         );
     }else{

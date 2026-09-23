@@ -1,8 +1,8 @@
 import { Product } from "@/lib/products";
-import { ProductCard } from "./ProductCard";
+import { ProductCard } from "@/components/ProductCard";
 
 export default function ProductList({products}: {products: Product[]}){
- 
+
     return (
         <div>
             {products.map((product) => {
