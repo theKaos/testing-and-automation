@@ -27,11 +27,18 @@ export async function getProducts(): Promise<Product[]>{
         }, 3000);
     });
 }
+// Mocked Error Case if product id is 1 and attempted less than 3
+let attempt = 0;
 
 export async function getProduct(id: number): Promise<Product | undefined> {
     // Temporary Solution: load products from getProducts function till real Backend solution is build
     const products = await getProducts();
     
+    // Mocked Error Case if product id is 1 and attempted less than 3
+    if (id === 1 && attempt++ < 2) {
+        throw new Error("Error: Product Corrupted");
+    }
+
     return new Promise((resolve) => {
         resolve(products.find(product => {
             return product.id === id;

@@ -1,3 +1,5 @@
+"use client"
+
 export function QuantitySelector({ count, onChange }: { count: number; onChange: (next: number) => void }){
     // only accept integer values from count
     if (!Number.isInteger(count)) {
