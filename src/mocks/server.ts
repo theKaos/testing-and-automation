@@ -1,10 +1,6 @@
-import { http, HttpResponse } from "msw";
-import { setupServer } from "msw/node";
+// Mock Server Handler for Testing & interim solutions if needed
 
-const handlers = [
-    http.post("/api/checkout", () => {
-        return HttpResponse.json({ success: true });
-    })
-];
+//import { http, HttpResponse } from "msw";
+//import { setupServer } from "msw/node";
 
-export const server = setupServer(...handlers);
+//export const server = setupServer();
