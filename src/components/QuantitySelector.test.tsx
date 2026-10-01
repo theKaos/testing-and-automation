@@ -2,33 +2,37 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test } from "vitest";
 import { QuantitySelector } from "./QuantitySelector";
+import { CartItem } from "@/lib/cart/cart";
 import { useState } from "react";
 
 function TestWrapper(){
     const [currentQuantity, setCurrentQuantity] = useState<number>(2);
-    const changeQuantitiy = (newQuantity: number) => {
+    const currentCartItem: CartItem = { id: "test", price: 0, count: currentQuantity };
+    const changeQuantity = (_itemId: string, newQuantity: number) => {
         setCurrentQuantity(newQuantity);
     }
 
-    return <QuantitySelector count={currentQuantity} onChange={changeQuantitiy} />;
+    return <QuantitySelector cartItem={currentCartItem} onChange={changeQuantity} />;
 }
 
 function TestWrapperInitDisabled(){
     const [currentQuantity, setCurrentQuantity] = useState<number>(1);
-    const changeQuantitiy = (newQuantity: number) => {
+    const currentCartItem: CartItem = { id: "test", price: 0, count: currentQuantity };
+    const changeQuantity = (_itemId: string, newQuantity: number) => {
         setCurrentQuantity(newQuantity);
     }
 
-    return <QuantitySelector count={currentQuantity} onChange={changeQuantitiy} />;
+    return <QuantitySelector cartItem={currentCartItem} onChange={changeQuantity} />;
 }
 
 function TestWrapperInitWrongQuantity(){
     const [currentQuantity, setCurrentQuantity] = useState<number>(1.5);
-    const changeQuantitiy = (newQuantity: number) => {
+    const currentCartItem: CartItem = { id: "test", price: 0, count: currentQuantity };
+    const changeQuantity = (_itemId: string, newQuantity: number) => {
         setCurrentQuantity(newQuantity);
     }
 
-    return <QuantitySelector count={currentQuantity} onChange={changeQuantitiy} />;
+    return <QuantitySelector cartItem={currentCartItem} onChange={changeQuantity} />;
 }
 
 test("increase quantity through plus button", async () => {

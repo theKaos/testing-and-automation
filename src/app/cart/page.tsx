@@ -1,4 +1,4 @@
-import CartItemEntry from "@/components/CartItemEntry";
+import CartItemList from "@/components/CartItemList";
 import { CartItem } from "@/lib/cart/cart";
 import { getCart } from "@/lib/cart/cartProvider";
 
@@ -7,9 +7,7 @@ export default async function Cart(){
 
     return(
         <div>
-            {cart.map((cartItem) => (
-                <CartItemEntry key={cartItem.id} {...cartItem} />
-            ))}
+            <CartItemList cart={cart} />
         </div>
     );
 }

@@ -17,10 +17,15 @@ export function CheckoutForm(){
                     type="text" 
                     name="name" 
                     id="name" 
-                    value={values.name} 
+                    value={values.name}
+                    aria-invalid={Boolean(state?.nameError)}
+                    aria-errormessage={state?.nameError ? "error-name" : undefined} 
                     required
                     onChange={(e) => setValues({ ...values, name: e.target.value })} 
                 />
+                {state?.nameError && (
+                    <span id="error-name" className="errormessage">{state?.nameError}</span>
+                )}
             </div>
 
             <div>
@@ -46,7 +51,9 @@ export function CheckoutForm(){
                 <select 
                     name="payment" 
                     id="payment" 
-                    value={values.payment} 
+                    value={values.payment}
+                    aria-invalid={Boolean(state?.paymentError)}
+                    aria-errormessage={state?.paymentError ? "error-payment" : undefined} 
                     required
                     onChange={(e) => setValues({ ...values, payment: e.target.value })} 
                 >
@@ -54,6 +61,9 @@ export function CheckoutForm(){
                     <option value="credit">Kreditkarte</option>
                     <option value="wero">Wero</option>
                 </select>
+                {state?.paymentError && (
+                    <span id="error-payment" className="errormessage">{state?.paymentError}</span>
+                )}
             </div>
 
             <div>

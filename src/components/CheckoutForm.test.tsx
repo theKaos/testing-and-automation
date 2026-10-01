@@ -39,6 +39,7 @@ test("address input field accepts housnumbers with a letter correctly", async ()
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
 });
 
+// check address field input
 test("error is shown when address has not the correct format", async () => {
     render(<CheckoutForm />);
 
@@ -53,6 +54,38 @@ test("error is shown when address has not the correct format", async () => {
 
     expect(await screen.findByText("Die Adresse muss aus Straßennamen und Hausnummer bestehen.")).toBeInTheDocument();
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
+});
+
+// check name field input
+test("error is shown when name has not the correct format", async () => {
+    render(<CheckoutForm />);
+
+    const addressInput = screen.getByRole("textbox", { name: "Adresse:" });
+    const user = userEvent.setup();
+
+    await user.type(screen.getByRole("textbox", { name: "Name:" }), " ");
+    await user.type(addressInput, "Musterstraße 11");
+    await user.selectOptions(screen.getByRole("combobox", { name: "Zahlungsart:" }), "credit");
+
+    await user.click(screen.getByRole("button", { name: "Absenden" }));
+
+    expect(await screen.findByText("Gültiger Name muss angegeben werden")).toBeInTheDocument();
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+});
+
+// check payment field input
+test("return error when payment has not the correct format", async () => {
+    const formData = new FormData();
+
+    formData.append("name", "Max Mustermann");
+    formData.append("address", "Musterstraße 11");
+    formData.append("payment", "klarna");
+
+    await expect(
+        submitFormAction(null, formData)
+    ).resolves.toEqual({
+        paymentError: "ungültige Bezahlmethode angegeben",
+    });
 });
 
 test("general submit error is shown as an alert", async () => {

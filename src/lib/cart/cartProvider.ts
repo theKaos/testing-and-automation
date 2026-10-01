@@ -6,6 +6,12 @@ import { CartItem, updateQuantity } from "@/lib/cart/cart";
 let cart: CartItem[] = [{ id: "1", price: 12.99, count: 1 }, { id: "2", price: 9.99, count: 2 }];
 
 export async function updateCartQuantity(id: string, quantity: number): Promise<CartItem[]>{
+    // return error if id not found in cart
+    if(!cart.find(item => item.id === id)){
+        throw new Error(`item with id ${id} was not found in cart!`);
+    }
+
+    // if quantity 0 or smaller -> remove from cart Array
     return new Promise((resolve) => {
         // artificial delay of 1.5 seconds
         setTimeout(() => {
@@ -13,6 +19,7 @@ export async function updateCartQuantity(id: string, quantity: number): Promise<
             resolve(cart);
         }, 1500);
     });
+
 }
 
 export async function getCart(): Promise<CartItem[]>{
