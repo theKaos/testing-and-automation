@@ -11,7 +11,6 @@ export async function updateCartQuantity(id: string, quantity: number): Promise<
         throw new Error(`item with id ${id} was not found in cart!`);
     }
 
-    // if quantity 0 or smaller -> remove from cart Array
     return new Promise((resolve) => {
         // artificial delay of 1.5 seconds
         setTimeout(() => {
@@ -19,7 +18,6 @@ export async function updateCartQuantity(id: string, quantity: number): Promise<
             resolve(cart);
         }, 1500);
     });
-
 }
 
 export async function getCart(): Promise<CartItem[]>{

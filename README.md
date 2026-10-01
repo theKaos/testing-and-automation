@@ -4,7 +4,7 @@ Tiny E-Commerce-Storefront in Next.js/Typescript, created as a learning project 
 
 install:
 
-```bash
+```
 npm install
 ```
 
@@ -12,7 +12,7 @@ npm install
 
 run the development server:
 
-```bash
+```
 npm run dev
 ```
 
@@ -26,19 +26,19 @@ The tests are performed using React Testing Library and MSW.
 
 run once:
 
-```bash
+```
 npm run test
 ```
 
 run in watch mode:
 
-```bash
+```
 npm run test:watch
 ```
 
 run Coverage Report:
 
-```bash
+```
 npm run test:coverage
 ```
 
@@ -79,3 +79,67 @@ If a page.tsx file does not have a loading.tsx file on the same level, the loadi
 The same principle as the loading page, expect it shows an Error Content with a Retry functionality if an error happend
 
 while generating the content of their respective page.tsx pages
+
+## State Management
+
+This project only uses Reacts own state management tools. This project doesn't use external state Managements like e.g. Zustand to maintain the internal server persistance and prevent an additional State instance witch deviates from the internal ones. Otherwiese this would lead to e.g. changes in the cart not beeing consistently be saved on the only designated place the `cartProvider.ts`. 
+
+The introduction of Zustand had inadvertently broken server-side persistence entirely. An independent HTTP request demonstrated that the Zustand store instance running in the browser was completely different from the one Next.js used for server-side rendering; they existed in separate JavaScript environments and shared no memory.
+
+### local States
+
+#### CheckoutForms.tsx
+
+Contains the Values of the checout input fields in a values useSate ->
+
+```typescript
+const [values, setValues] = useState({name: "", address: "", payment: "paypal"});
+```
+
+### State lifting chain
+
+CartItemList.tsx -> CartItemEntry.tsx -> QuantitySlector.tsx
+
+#### CartItemList.tsx   
+Contains the state of the global Cart Object holded by the cartProvider.ts, as well as a obtimistic state of the carts price subtotal value ->
+
+```typescript
+// State of Cart 
+const [cartState, setCartState] = useState<CartItem[]>(cart);
+
+// Optimistic Subtotal value 
+const [optimisticSubtotal, setOptimisticSubtotal] = useOptimistic<number>(calculateSubtotal(cartState));
+```
+
+the subtotal is stored as a useOptimistic value to display a changed subtotal value immediatly, even when the calculation by a quantity change of a cartItem is still in progress. This is to avoid a temporary wrong display of the subtotal value by a delayed quantity changed of a cart Item. 
+
+Optimistic values are used as a kind of bridge between the values that are visible immediately in the browser and the values that are actualy confirmed on the server. Between the e.g. artifical delay of the quantity cahnge the values are seen differently on purpose until they converge.
+
+#### CartItemEntry.tsx
+
+Doesn't hold any own states. Only gets the cart items from the cart state and a onChange function to update the cart and optimistic subtotal states as props from the parent `CartItemList.tsx`
+
+#### QuantitySlector.tsx
+
+Like it's parent `CartItemEntry.tsx` gets the cart items from the cart state and a onChange function to update the cart and optimistic subtotal states as props from the parent `CartItemEntry.tsx`.
+
+In addition holds an own optimistic state value of the cart item count. it's used for the same base purpose as `optimisticSubtotal` variable in `CartItemList.tsx`, to display a changed quantity value immediatly, even when the calculation by a quantity change of a cartItem is still in progress.
+
+### Server-side States
+
+`src\lib\cart\cartProvider.ts`
+
+This File contains the cart informations as the single source of truth as a server state object for the entire project and is the only place to persist the cart information:
+
+```typescript
+// S.S.O.T Cart starting value
+let cart: CartItem[] = [{ id: "1", price: 12.99, count: 1 }, { id: "2", price: 9.99, count: 2 }];
+```
+
+its available in the project by the getter function getCart():
+
+```typescript
+export async function getCart(): Promise<CartItem[]>{
+    return new Promise((resolve) => resolve(cart));
+}
+```
