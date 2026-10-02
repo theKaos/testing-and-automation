@@ -1,7 +1,12 @@
-import { render, screen } from "@testing-library/react";
-import { expect, test} from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { expect, test, vi } from "vitest";
 import { ProductCard } from "@/components/ProductCard";
 import { Product } from "@/lib/products";
+import { addToCart } from "@/lib/cart/cartProvider";
+
+vi.mock("@/lib/cart/cartProvider", () => ({
+    addToCart: vi.fn().mockResolvedValue(undefined),
+}));
 
 const cup: Product = { id: 1, name: "Kaffeetasse", price: 12.99 };
 const brokenCup: Product = { id: 2, name: "Kaffeetasse", price: 0};
@@ -26,4 +31,47 @@ test("doesn't render product if price is 0", async () => {
     render(<ProductCard {...brokenCup} />);
 
     expect(screen.queryByText("Kaffeetasse")).not.toBeInTheDocument();
+});
+
+test("shows and clears the success message after adding a product", async () => {
+    vi.useFakeTimers();
+
+    try {
+        render(<ProductCard {...cup} />);
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole("button", { name: "In den Warenkorb" }));
+            await Promise.resolve();
+        });
+
+        expect(screen.getByText("Produkt zum Warenkorb hinzugefügt")).toBeInTheDocument();
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(4000);
+        });
+        expect(screen.queryByText("Produkt zum Warenkorb hinzugefügt")).not.toBeInTheDocument();
+    } finally {
+        vi.useRealTimers();
+    }
+});
+
+test("shows an error message when adding a product fails", async () => {
+    vi.useFakeTimers();
+
+    try {
+        vi.mocked(addToCart).mockRejectedValueOnce(new Error("network error"));
+        render(<ProductCard {...cup} />);
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole("button", { name: "In den Warenkorb" }));
+            await Promise.resolve();
+        });
+
+        expect(screen.getByRole("alert")).toHaveTextContent("network error");
+        await act(async () => {
+            await vi.advanceTimersByTimeAsync(4000);
+        });
+        expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    } finally {
+        vi.useRealTimers();
+    }
 });

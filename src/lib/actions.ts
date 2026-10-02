@@ -1,5 +1,8 @@
 "use server"
 
+import { revalidatePath } from "next/cache";
+import { emptyCart } from "@/lib/cart/cartProvider";
+
 export async function submitFormAction(previousState: unknown, formData: FormData){
     try{
         // name and payment not used yet
@@ -25,6 +28,9 @@ export async function submitFormAction(previousState: unknown, formData: FormDat
             return { addressError: "Die Adresse muss aus Straßennamen und Hausnummer bestehen."};
         }
 
+        // empty cart object when order was successful
+        await emptyCart();
+        revalidatePath("/checkout");
         return { success: "Bestellung erhalten!"};
     }catch(error){
         // Server Error

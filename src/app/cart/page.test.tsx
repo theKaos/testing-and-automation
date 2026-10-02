@@ -4,12 +4,31 @@ import { calculateSubtotal, CartItem } from "@/lib/cart/cart";
 import { getCart } from "@/lib/cart/cartProvider";
 import CartItemList from "@/components/CartItemList";
 
+const mockCartState = vi.hoisted(() => ({
+    items: [] as Array<{ id: string; price: number; count: number }>,
+}));
+
+vi.mock("@/lib/cart/cartProvider", () => ({
+    getCart: vi.fn(async () => mockCartState.items),
+    updateCartQuantity: vi.fn((id: string, quantity: number) =>
+        new Promise<Array<{ id: string; price: number; count: number }>>((resolve) => {
+            setTimeout(() => {
+                mockCartState.items = mockCartState.items.map((item) =>
+                    item.id === id ? { ...item, count: quantity } : item,
+                );
+                resolve(mockCartState.items);
+            }, 1500);
+        }),
+    ),
+}));
+
 test("useOptimistic and handleQuantityChange correctly display subtotal at their time", async () => {
     vi.useFakeTimers();
 
     const cart: CartItem[] = [{ id: "1", price: 12.99, count: 1 }, { id: "2", price: 9.99, count: 2 }];
 
     try {
+        mockCartState.items = cart.map((item) => ({ ...item }));
         render(
             <CartItemList cart={cart} />
         );

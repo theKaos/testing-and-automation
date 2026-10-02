@@ -1,11 +1,23 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
-import { expect, test, vi } from "vitest";
+import { beforeEach, expect, test, vi } from "vitest";
 import { useState } from "react";
 import CartItemEntry from "./CartItemEntry";
 import { CartItem } from "@/lib/cart/cart";
 import { getCart, updateCartQuantity } from "@/lib/cart/cartProvider";
+import { addToCart, emptyCart } from "@/lib/cart/cartProvider";
+import { getProductPrice } from "@/lib/products";
+
+vi.mock("@/lib/products", () => ({
+    getProductPrice: vi.fn(),
+}));
 
 const cartItem: CartItem = { id: "1", price: 12.99, count: 1 };
+
+beforeEach(async () => {
+    await emptyCart();
+    vi.mocked(getProductPrice).mockResolvedValue(12.99);
+    await addToCart("1");
+});
 
 function TestWrapper() {
     const [currentCartItem, setCurrentCartItem] = useState(cartItem);
@@ -31,6 +43,18 @@ test("throw error if not available cart item is tried to update", async () => {
     await expect(
         updateCartQuantity("0", 2)
     ).rejects.toThrow("item with id 0 was not found in cart!");
+});
+
+test("hides the quantity selector when requested", () => {
+    render(
+        <CartItemEntry
+            cartItem={cartItem}
+            onChange={() => {}}
+            showQuantitySelector={false}
+        />,
+    );
+
+    expect(screen.queryByRole("button", { name: "+" })).not.toBeInTheDocument();
 });
 
 test("useOptimistic and updateCartQuantity correctly display quantity at their time", async () => {

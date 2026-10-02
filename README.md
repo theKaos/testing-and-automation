@@ -100,7 +100,8 @@ const [values, setValues] = useState({name: "", address: "", payment: "paypal"})
 
 CartItemList.tsx -> CartItemEntry.tsx -> QuantitySlector.tsx
 
-#### CartItemList.tsx   
+#### CartItemList.tsx
+
 Contains the state of the global Cart Object holded by the cartProvider.ts, as well as a obtimistic state of the carts price subtotal value ->
 
 ```typescript

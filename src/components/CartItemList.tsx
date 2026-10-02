@@ -6,7 +6,7 @@ import { useOptimistic, useState } from "react";
 import CartItemEntry from "@/components/CartItemEntry";
 import CartSubtotal from "@/components/CartSubtotal";
 
-export default function CartItemList({ cart }: { cart: CartItem[] }){
+export default function CartItemList({ cart, showQuantitySelector = true }: { cart: CartItem[], showQuantitySelector?: boolean }){
 
     // State of Cart
     const [cartState, setCartState] = useState<CartItem[]>(cart);
@@ -24,7 +24,7 @@ export default function CartItemList({ cart }: { cart: CartItem[] }){
     return(
         <div>
             {cartState.map((cartItem) => (
-                <CartItemEntry key={cartItem.id} cartItem={cartItem} onChange={handleQuantityChange} />
+                <CartItemEntry key={cartItem.id} cartItem={cartItem} onChange={handleQuantityChange} showQuantitySelector={showQuantitySelector} />
             ))}
             <CartSubtotal subTotal={optimisticSubtotal} />
         </div>

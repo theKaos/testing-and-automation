@@ -3,6 +3,11 @@ import userEvent from "@testing-library/user-event";
 import { expect, test, vi } from "vitest";
 import { Product } from "@/lib/products";
 import ProductList from "@/components/ProductList";
+import { addToCart } from "@/lib/cart/cartProvider";
+
+vi.mock("@/lib/cart/cartProvider", () => ({
+    addToCart: vi.fn().mockResolvedValue(undefined),
+}));
 
 const products: Product[] = [{
                     id: 1,
@@ -21,17 +26,12 @@ const products: Product[] = [{
                 }];
 
 test("calls onAddToCart with the clicked product", async () => {
-    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     const user = userEvent.setup();
 
     render(<ProductList products={products} />);
 
-    await user.click(
-        screen.getAllByText('In den Warenkorb')[0]
-    );
+    await user.click(screen.getAllByRole("button", { name: "In den Warenkorb" })[0]);
     
-    expect(logSpy).toHaveBeenCalledOnce();
-    expect(logSpy).toHaveBeenCalledWith(
-        "Produkt Nr. 1 in Warenkorb gelegt"
-    );
+    expect(addToCart).toHaveBeenCalledOnce();
+    expect(addToCart).toHaveBeenCalledWith(1);
 });

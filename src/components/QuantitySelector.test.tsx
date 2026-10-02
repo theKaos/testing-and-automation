@@ -69,3 +69,19 @@ test("throw error if not allowed count value is used", async () => {
         render(<TestWrapperInitWrongQuantity />);
     }).toThrow();
 });
+
+test("hides quantity controls when showQuantitySelector is false", () => {
+    const cartItem: CartItem = { id: "test", price: 0, count: 2 };
+
+    render(
+        <QuantitySelector
+            cartItem={cartItem}
+            onChange={() => {}}
+            showQuantitySelector={false}
+        />,
+    );
+
+    expect(screen.queryByRole("button", { name: "+" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "-" })).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("2");
+});

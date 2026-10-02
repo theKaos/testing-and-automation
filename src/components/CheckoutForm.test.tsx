@@ -4,6 +4,12 @@ import { expect, test, vi } from "vitest";
 import { CheckoutForm } from "./CheckoutForm";
 import { submitFormAction } from "@/lib/actions";
 import * as actions from "@/lib/actions";
+import { getCart } from "@/lib/cart/cartProvider";
+import { revalidatePath } from "next/cache";
+
+vi.mock("next/cache", () => ({
+    revalidatePath: vi.fn(),
+}));
 
 test("form is not valid when fields are empty", async () => {
     const user = userEvent.setup();
@@ -23,6 +29,8 @@ test("form was successfully submitted with correct input entries", async () => {
     await user.click(screen.getByRole("button", { name: "Absenden" }));
 
     expect(await screen.findByRole("status")).toHaveTextContent("Bestellung erhalten!");
+    await expect(getCart()).resolves.toEqual([]);
+    expect(revalidatePath).toHaveBeenCalledWith("/checkout");
 });
 
 test("address input field accepts housnumbers with a letter correctly", async () => {
@@ -102,6 +110,23 @@ test("general submit error is shown as an alert", async () => {
     await user.click(screen.getByRole("button", { name: "Absenden" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(errorMessage);
+    actionSpy.mockRestore();
+});
+
+test("payment validation error is shown and marked invalid", async () => {
+    const actionSpy = vi.spyOn(actions, "submitFormAction").mockResolvedValue({
+        paymentError: "ungültige Bezahlmethode angegeben",
+    });
+    const user = userEvent.setup();
+
+    render(<CheckoutForm />);
+
+    await user.type(screen.getByRole("textbox", { name: "Name:" }), "Max Mustermann");
+    await user.type(screen.getByRole("textbox", { name: "Adresse:" }), "Musterstraße 11");
+    await user.click(screen.getByRole("button", { name: "Absenden" }));
+
+    expect(await screen.findByText("ungültige Bezahlmethode angegeben")).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Zahlungsart:" })).toHaveAttribute("aria-invalid", "true");
     actionSpy.mockRestore();
 });
 

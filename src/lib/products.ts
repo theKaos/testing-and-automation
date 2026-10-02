@@ -45,3 +45,8 @@ export async function getProduct(id: number): Promise<Product | undefined> {
         }));
     });
 }
+
+export async function getProductPrice(id: number): Promise<number | undefined>{
+    const product = await getProduct(id);
+    return product?.price;
+}
