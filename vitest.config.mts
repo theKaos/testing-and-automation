@@ -7,6 +7,9 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: ['./vitest.setup.ts']
+    setupFiles: ['./vitest.setup.ts'],
+    // Playwright's own *.spec.ts files live under tests/ and must not be
+    // picked up by Vitest's default include pattern (which also matches *.spec.ts).
+    exclude: ['node_modules/**', 'tests/**'],
   },
 });

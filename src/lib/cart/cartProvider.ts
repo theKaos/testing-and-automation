@@ -2,27 +2,26 @@
 
 import { CartItem, updateQuantity } from "@/lib/cart/cart";
 import { getProductPrice } from "@/lib/products";
-
-// S.S.O.T Cart starting value
-let cart: CartItem[] = [];
+import { clearCartState, getCartState, replaceCartState } from "@/lib/cart/cartStore";
 
 export async function updateCartQuantity(id: string, quantity: number): Promise<CartItem[]>{
     // return error if id not found in cart
-    if(!cart.find(item => item.id === id)){
+    if(!getCartState().find(item => item.id === id)){
         throw new Error(`item with id ${id} was not found in cart!`);
     }
 
     return new Promise((resolve) => {
         // artificial delay of 1.5 seconds
         setTimeout(() => {
-            cart = updateQuantity(cart, id, quantity);
-            resolve(cart);
+            const updatedCart = updateQuantity(getCartState(), id, quantity);
+            replaceCartState(updatedCart);
+            resolve(updatedCart);
         }, 1500);
     });
 }
 
 export async function getCart(): Promise<CartItem[]>{
-    return new Promise((resolve) => resolve(cart));
+    return new Promise((resolve) => resolve(getCartState()));
 }
 
 export async function addToCart(id: string | number){
@@ -34,7 +33,7 @@ export async function addToCart(id: string | number){
     }
 
     const stringId = String(numberId);
-    const product = cart.find(item => item.id === stringId);
+    const product = getCartState().find(item => item.id === stringId);
 
     if(product){
         // product with id is already in cart -> increase its quantity
@@ -45,10 +44,10 @@ export async function addToCart(id: string | number){
         if(price === undefined){
             throw new Error(`product with id ${numberId} was not found`);
         }
-        cart.push({id: stringId, price, count: 1});
+        replaceCartState([...getCartState(), {id: stringId, price, count: 1}]);
     }
 }
 
 export async function emptyCart(){
-    cart = [];
+    clearCartState();
 }
