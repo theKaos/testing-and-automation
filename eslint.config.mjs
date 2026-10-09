@@ -15,7 +15,10 @@ const eslintConfig = defineConfig([
     "**/build/**",
     "next-env.d.ts",
     "**/coverage/**",
-    "public/mockServiceWorker.js"
+    "public/mockServiceWorker.js",
+    "**/playwright-report/**",
+    "**/test-results/**",
+    "**/blob-report/**"
   ]),
 ]);
 

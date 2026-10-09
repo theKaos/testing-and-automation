@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { formatCurrency } from "@/lib/cart";
-import { addToCart } from "@/lib/cart/cartProvider";
+import { addToCartAction } from "@/lib/actions";
 import { Product } from "@/lib/products";
 
 export function ProductCard(product: Product){
@@ -12,7 +12,7 @@ export function ProductCard(product: Product){
     
     async function onAddToCart(product: Product) {
         try {
-            await addToCart(product.id);
+            await addToCartAction(product.id);
             // show success message for 4 seconds
             setSuccessState("Produkt zum Warenkorb hinzugefügt");
             setTimeout(() => setSuccessState(""), 4000);

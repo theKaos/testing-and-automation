@@ -1,7 +1,7 @@
 "use client";
 
 import { calculateSubtotal, CartItem, updateQuantity } from "@/lib/cart/cart";
-import { updateCartQuantity } from "@/lib/cart/cartProvider";
+import { updateCartQuantityAction } from "@/lib/actions";
 import { useOptimistic, useState } from "react";
 import CartItemEntry from "@/components/CartItemEntry";
 import CartSubtotal from "@/components/CartSubtotal";
@@ -17,7 +17,7 @@ export default function CartItemList({ cart, showQuantitySelector = true }: { ca
         const optimisticCart = updateQuantity(cartState, id, nextQuantity);
         setOptimisticSubtotal(calculateSubtotal(optimisticCart));
 
-        const updatedCart = await updateCartQuantity(id, nextQuantity); 
+        const updatedCart = await updateCartQuantityAction(id, nextQuantity);
         setCartState(updatedCart);
     }
 

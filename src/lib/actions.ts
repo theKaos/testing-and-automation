@@ -1,7 +1,18 @@
 "use server"
 
 import { revalidatePath } from "next/cache";
-import { emptyCart } from "@/lib/cart/cartProvider";
+import { addToCart, emptyCart, updateCartQuantity } from "@/lib/cart/cartProvider";
+import { getCartSessionId, getOrCreateCartSessionId } from "@/lib/cart/cartSession";
+
+export async function addToCartAction(id: string | number): Promise<void> {
+    const sessionId = await getOrCreateCartSessionId();
+    await addToCart(sessionId, id);
+}
+
+export async function updateCartQuantityAction(id: string, quantity: number) {
+    const sessionId = await getOrCreateCartSessionId();
+    return updateCartQuantity(sessionId, id, quantity);
+}
 
 export async function submitFormAction(previousState: unknown, formData: FormData){
     try{
@@ -29,7 +40,7 @@ export async function submitFormAction(previousState: unknown, formData: FormDat
         }
 
         // empty cart object when order was successful
-        await emptyCart();
+        await emptyCart(await getCartSessionId());
         revalidatePath("/checkout");
         return { success: "Bestellung erhalten!"};
     }catch(error){

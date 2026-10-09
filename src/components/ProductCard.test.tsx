@@ -2,10 +2,10 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { expect, test, vi } from "vitest";
 import { ProductCard } from "@/components/ProductCard";
 import { Product } from "@/lib/products";
-import { addToCart } from "@/lib/cart/cartProvider";
+import { addToCartAction } from "@/lib/actions";
 
-vi.mock("@/lib/cart/cartProvider", () => ({
-    addToCart: vi.fn().mockResolvedValue(undefined),
+vi.mock("@/lib/actions", () => ({
+    addToCartAction: vi.fn().mockResolvedValue(undefined),
 }));
 
 const cup: Product = { id: 1, name: "Kaffeetasse", price: 12.99 };
@@ -58,7 +58,7 @@ test("shows an error message when adding a product fails", async () => {
     vi.useFakeTimers();
 
     try {
-        vi.mocked(addToCart).mockRejectedValueOnce(new Error("network error"));
+        vi.mocked(addToCartAction).mockRejectedValueOnce(new Error("network error"));
         render(<ProductCard {...cup} />);
 
         await act(async () => {

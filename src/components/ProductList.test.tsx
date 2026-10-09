@@ -3,10 +3,10 @@ import userEvent from "@testing-library/user-event";
 import { expect, test, vi } from "vitest";
 import { Product } from "@/lib/products";
 import ProductList from "@/components/ProductList";
-import { addToCart } from "@/lib/cart/cartProvider";
+import { addToCartAction } from "@/lib/actions";
 
-vi.mock("@/lib/cart/cartProvider", () => ({
-    addToCart: vi.fn().mockResolvedValue(undefined),
+vi.mock("@/lib/actions", () => ({
+    addToCartAction: vi.fn().mockResolvedValue(undefined),
 }));
 
 const products: Product[] = [{
@@ -32,6 +32,6 @@ test("calls onAddToCart with the clicked product", async () => {
 
     await user.click(screen.getAllByRole("button", { name: "In den Warenkorb" })[0]);
     
-    expect(addToCart).toHaveBeenCalledOnce();
-    expect(addToCart).toHaveBeenCalledWith(1);
+    expect(addToCartAction).toHaveBeenCalledOnce();
+    expect(addToCartAction).toHaveBeenCalledWith(1);
 });

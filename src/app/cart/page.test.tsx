@@ -10,7 +10,10 @@ const mockCartState = vi.hoisted(() => ({
 
 vi.mock("@/lib/cart/cartProvider", () => ({
     getCart: vi.fn(async () => mockCartState.items),
-    updateCartQuantity: vi.fn((id: string, quantity: number) =>
+}));
+
+vi.mock("@/lib/actions", () => ({
+    updateCartQuantityAction: vi.fn((id: string, quantity: number) =>
         new Promise<Array<{ id: string; price: number; count: number }>>((resolve) => {
             setTimeout(() => {
                 mockCartState.items = mockCartState.items.map((item) =>
@@ -43,7 +46,7 @@ test("useOptimistic and handleQuantityChange correctly display subtotal at their
             await vi.advanceTimersByTimeAsync(1499);
         });
         await expect(
-            getCart().then((cart) => calculateSubtotal(cart))
+            getCart("cart-page-test-session").then((cart) => calculateSubtotal(cart))
         ).resolves.toBe(32.97);
 
         // quantity of 2 expected after updateCartQuantity is completed
@@ -51,7 +54,7 @@ test("useOptimistic and handleQuantityChange correctly display subtotal at their
             await vi.advanceTimersByTimeAsync(1);
         });
         await expect(
-            getCart().then((cart) => calculateSubtotal(cart))
+            getCart("cart-page-test-session").then((cart) => calculateSubtotal(cart))
         ).resolves.toBe(45.96);
         expect(screen.getByText(/Zwischensumme:/)).toHaveTextContent("Zwischensumme: 45,96€");
     } finally {

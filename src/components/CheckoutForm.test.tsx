@@ -7,6 +7,12 @@ import * as actions from "@/lib/actions";
 import { getCart } from "@/lib/cart/cartProvider";
 import { revalidatePath } from "next/cache";
 
+const sessionId = "checkout-form-test-session";
+
+vi.mock("@/lib/cart/cartSession", () => ({
+    getCartSessionId: vi.fn(async () => sessionId),
+}));
+
 vi.mock("next/cache", () => ({
     revalidatePath: vi.fn(),
 }));
@@ -29,7 +35,7 @@ test("form was successfully submitted with correct input entries", async () => {
     await user.click(screen.getByRole("button", { name: "Absenden" }));
 
     expect(await screen.findByRole("status")).toHaveTextContent("Bestellung erhalten!");
-    await expect(getCart()).resolves.toEqual([]);
+    await expect(getCart(sessionId)).resolves.toEqual([]);
     expect(revalidatePath).toHaveBeenCalledWith("/checkout");
 });
 

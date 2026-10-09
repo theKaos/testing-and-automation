@@ -7,6 +7,8 @@ import { getCart, updateCartQuantity } from "@/lib/cart/cartProvider";
 import { addToCart, emptyCart } from "@/lib/cart/cartProvider";
 import { getProductPrice } from "@/lib/products";
 
+const sessionId = "cart-item-entry-test-session";
+
 vi.mock("@/lib/products", () => ({
     getProductPrice: vi.fn(),
 }));
@@ -14,9 +16,9 @@ vi.mock("@/lib/products", () => ({
 const cartItem: CartItem = { id: "1", price: 12.99, count: 1 };
 
 beforeEach(async () => {
-    await emptyCart();
+    await emptyCart(sessionId);
     vi.mocked(getProductPrice).mockResolvedValue(12.99);
-    await addToCart("1");
+    await addToCart(sessionId, "1");
 });
 
 function TestWrapper() {
@@ -26,7 +28,7 @@ function TestWrapper() {
         <CartItemEntry
             cartItem={currentCartItem}
             onChange={async (id, nextQuantity) => {
-                const updatedCart = await updateCartQuantity(id, nextQuantity);
+                const updatedCart = await updateCartQuantity(sessionId, id, nextQuantity);
                 const updatedCartItem = updatedCart.find((item) => item.id === id);
 
                 if (updatedCartItem) {
@@ -41,7 +43,7 @@ test("throw error if not available cart item is tried to update", async () => {
     render(<TestWrapper />);
 
     await expect(
-        updateCartQuantity("0", 2)
+        updateCartQuantity(sessionId, "0", 2)
     ).rejects.toThrow("item with id 0 was not found in cart!");
 });
 
@@ -67,7 +69,7 @@ test("useOptimistic and updateCartQuantity correctly display quantity at their t
         
         // quantity of 2 expected from useOptimistic
         expect(screen.getByRole("status")).toHaveTextContent("2");
-        await expect(getCart()).resolves.toEqual(
+        await expect(getCart(sessionId)).resolves.toEqual(
             expect.arrayContaining([expect.objectContaining({ id: "1", count: 1 })]),
         );
 
@@ -75,7 +77,7 @@ test("useOptimistic and updateCartQuantity correctly display quantity at their t
         await act(async () => {
             await vi.advanceTimersByTimeAsync(1499);
         });
-        await expect(getCart()).resolves.toEqual(
+        await expect(getCart(sessionId)).resolves.toEqual(
             expect.arrayContaining([expect.objectContaining({ id: "1", count: 1 })]),
         );
 
@@ -83,7 +85,7 @@ test("useOptimistic and updateCartQuantity correctly display quantity at their t
         await act(async () => {
             await vi.advanceTimersByTimeAsync(1);
         });
-        await expect(getCart()).resolves.toEqual(
+        await expect(getCart(sessionId)).resolves.toEqual(
             expect.arrayContaining([expect.objectContaining({ id: "1", count: 2 })]),
         );
         expect(screen.getByRole("status")).toHaveTextContent("2");
@@ -96,7 +98,7 @@ test("if quantity of cart item is reduced to 0, deelte it from cart", async () =
     vi.useFakeTimers();
     
     try {
-        const updatePromise = updateCartQuantity("1", 0);
+        const updatePromise = updateCartQuantity(sessionId, "1", 0);
 
         await act(async () => {
             await vi.advanceTimersByTimeAsync(1500);
