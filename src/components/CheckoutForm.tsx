@@ -23,7 +23,7 @@ export function CheckoutForm(){
                         onChange={(e) => setValues({ ...values, name: e.target.value })} 
                     />
                     {state?.nameError && (
-                        <span id="error-name" className="errormessage">{state?.nameError}</span>
+                        <span id="error-name" className="errormessage" role="alert">{state?.nameError}</span>
                     )}
                 </div>
 
@@ -40,7 +40,7 @@ export function CheckoutForm(){
                         onChange={(e) => setValues({ ...values, address: e.target.value })}  
                     />
                     {state?.addressError && (
-                        <span id="error-address" className="errormessage">{state?.addressError}</span>
+                        <span id="error-address" className="errormessage" role="alert">{state?.addressError}</span>
                     )}
                 </div>
 
@@ -61,7 +61,7 @@ export function CheckoutForm(){
                         <option value="wero">Wero</option>
                     </select>
                     {state?.paymentError && (
-                        <span id="error-payment" className="errormessage">{state?.paymentError}</span>
+                        <span id="error-payment" className="errormessage" role="alert">{state?.paymentError}</span>
                     )}
                 </div>
 
