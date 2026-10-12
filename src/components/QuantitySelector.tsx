@@ -34,11 +34,11 @@ export function QuantitySelector({ cartItem, onChange, showQuantitySelector = tr
     return(
         <div>
             {showQuantitySelector &&
-                <button onClick={() => decreaseQuantity()} disabled={isDisabled}>-</button> 
+                <button onClick={() => decreaseQuantity()} disabled={isDisabled} aria-label="Produktanzahl verringern">-</button> 
             }
             <div>Anzahl: <span role="status">{optimisticCount}</span></div>
             {showQuantitySelector &&
-                <button onClick={() => increaseQuantity()}>+</button>
+                <button onClick={() => increaseQuantity()} aria-label="Produktanzahl erhöhen">+</button>
             }
         </div>
     )

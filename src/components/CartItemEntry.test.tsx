@@ -56,7 +56,7 @@ test("hides the quantity selector when requested", () => {
         />,
     );
 
-    expect(screen.queryByRole("button", { name: "+" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Produktanzahl erhöhen" })).not.toBeInTheDocument();
 });
 
 test("useOptimistic and updateCartQuantity correctly display quantity at their time", async () => {
@@ -65,7 +65,7 @@ test("useOptimistic and updateCartQuantity correctly display quantity at their t
     try {
         render(<TestWrapper />);
 
-        fireEvent.click(screen.getByRole("button", { name: "+" }));
+        fireEvent.click(screen.getByRole("button", { name: "Produktanzahl erhöhen" }));
         
         // quantity of 2 expected from useOptimistic
         expect(screen.getByRole("status")).toHaveTextContent("2");

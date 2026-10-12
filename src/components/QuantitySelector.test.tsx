@@ -38,7 +38,7 @@ function TestWrapperInitWrongQuantity(){
 test("increase quantity through plus button", async () => {
     render(<TestWrapper />)
     
-    await userEvent.click(screen.getByRole("button", {name: "+"}));
+    await userEvent.click(screen.getByRole("button", {name: "Produktanzahl erhöhen"}));
     expect(screen.getByRole("status")).toHaveTextContent("3"); 
     
 });
@@ -46,22 +46,22 @@ test("increase quantity through plus button", async () => {
 test("decrease quantity through minus button", async () => {
     render(<TestWrapper />)
     
-    await userEvent.click(screen.getByRole("button", {name: "-"}));
+    await userEvent.click(screen.getByRole("button", {name: "Produktanzahl verringern"}));
     expect(screen.getByRole("status")).toHaveTextContent("1"); 
 });
 
 test("disable minus button if quantity gets to 1 or lower", async () => {
     render(<TestWrapper />)
     
-    await userEvent.click(screen.getByRole("button", {name: "-"}));
-    await userEvent.click(screen.getByRole("button", {name: "-"}));
-    expect(screen.getByRole("button", {name: "-"})).toHaveAttribute("disabled");
+    await userEvent.click(screen.getByRole("button", {name: "Produktanzahl verringern"}));
+    await userEvent.click(screen.getByRole("button", {name: "Produktanzahl verringern"}));
+    expect(screen.getByRole("button", {name: "Produktanzahl verringern"})).toHaveAttribute("disabled");
 });
 
 test("minus button disable if init quantity is 1 or lower", async () => {
     render(<TestWrapperInitDisabled />)
     
-    expect(screen.getByRole("button", {name: "-"})).toHaveAttribute("disabled");
+    expect(screen.getByRole("button", {name: "Produktanzahl verringern"})).toHaveAttribute("disabled");
 });
 
 test("throw error if not allowed count value is used", async () => {
@@ -81,7 +81,7 @@ test("hides quantity controls when showQuantitySelector is false", () => {
         />,
     );
 
-    expect(screen.queryByRole("button", { name: "+" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "-" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Produktanzahl erhöhen" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Produktanzahl verringern" })).not.toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("2");
 });

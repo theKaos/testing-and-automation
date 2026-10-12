@@ -36,7 +36,7 @@ test("useOptimistic and handleQuantityChange correctly display subtotal at their
             <CartItemList cart={cart} />
         );
 
-        fireEvent.click(screen.getAllByRole("button", { name: "+" })[0]);
+        fireEvent.click(screen.getAllByRole("button", { name: "Produktanzahl erhöhen" })[0]);
         
         // subtotal of 45.96 expected from useOptimistic
         expect(screen.getByText(/Zwischensumme:/)).toHaveTextContent("Zwischensumme: 45,96€");
