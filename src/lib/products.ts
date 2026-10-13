@@ -5,8 +5,7 @@ export type Product = {
 }
 
 export async function getProducts(): Promise<Product[]>{
-    return new Promise((resolve) => {
-        setTimeout(() => { resolve([
+    return [
             {
                 id: 1,
                 name: "Tasse",
@@ -22,8 +21,7 @@ export async function getProducts(): Promise<Product[]>{
                 name: "Figur",
                 price: 49.99
             }
-        ]); }, 3000);
-    });
+        ];
 }
 // Mocked Error Case if product id is 1 and attempted less than 3
 let attempt = 0;

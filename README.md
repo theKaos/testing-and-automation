@@ -42,6 +42,29 @@ run Coverage Report:
 npm run test:coverage
 ```
 
+## Lighthouse
+
+Performance was tested at `http://localhost:3000` with the following command:
+
+```bash
+npx lighthouse http://localhost:3000 --throttling-method=devtools --output=json --output-path=./lighthouse-report.json --only-categories=performance --chrome-flags="--headless"
+```
+
+`--throttling-method=devtools` is important because Lighthouse applies network and CPU throttling through DevTools during the run and uses the values measured under those conditions. With `simulate`, results are estimated afterward using a model instead.
+
+| Metric | Before (`lighthouse-report-before.json`) | Current (`lighthouse-report.json`) | Comparison |
+| --- | ---: | ---: | --- |
+| LCP (Largest Contentful Paint) | 3,08 s | 1,31 s | improved |
+| CLS (Cumulative Layout Shift) | 0 | 0 | same |
+| TBT (Total Blocking Time) | 31 ms | 72 ms | deteriorated |
+
+These results are based on single measurements. The values may fluctuate slightly with repeated measurements.
+
+LCP decreased significantly, while CLS remained at 0. TBT was higher in the current run. 
+For this project the TBT Value is being used instead of the INP. This is because a lighthouse CLI call performs only a simple page load.
+A proper INP Value can only be measured through actual user interactions taking place during the measurement. 
+It is not measurable via Lighthouse in navigation mode.
+
 ## Architecture
 
 The Components in this Project are getting devided between server side and client side Components by the following rules in general:
