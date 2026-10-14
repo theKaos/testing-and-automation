@@ -22,6 +22,9 @@ jobs:
       - name: ci starten
         run: npm ci                 # Shell-Befehl
 
+      - name: Next.js types generieren
+        run: npx next typegen
+
       - name: typecheck
         run: npx tsc --noEmit
       
