@@ -60,3 +60,11 @@ jobs:
         with: 
           name: playwright-report
           path: playwright-report/
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: Docker-Image bauen und validieren
+        uses: docker build --tag storefront:ci .
