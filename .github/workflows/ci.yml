@@ -67,4 +67,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Docker-Image bauen und validieren
-        uses: docker build --tag storefront:ci .
+        run: docker build --tag storefront:ci .
