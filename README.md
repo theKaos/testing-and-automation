@@ -1,4 +1,26 @@
-Tiny E-Commerce-Storefront in Next.js/Typescript, created as a learning project focused on automated testing, CI, and Next.js in detail.
+## Project Goal
+
+This Project serves only as a learning project focused on automated testing, CI, and Next.js in detail to close specific knowledge gaps. 
+
+It contains a rudimentary mocked store frontend as a basis use-case for this project.
+
+## Tech-Stack
+
+Next.js, Typescript, Vitest, Playwright, axe-core, Lighthouse, Docker, GitHub Actions
+
+## Learnings
+
+Server Actions, useOptimistic, accessibility automation, performance measurement, CI/CD, containerization
+
+## CI/CD-Badge
+
+![CI](https://github.com/theKaos/testing-and-automation/actions/workflows/ci.yml/badge.svg)
+
+## Deliberate simplifications
+
+The State of the Cart is only in-memory persisted and the Products shown are mock-based hardcoded. 
+
+Both are not managed by a Database, because Databases were out of scope for this learning project.
 
 ## Setup
 
@@ -46,23 +68,23 @@ npm run test:coverage
 
 Performance was tested at `http://localhost:3000` with the following command:
 
-```bash
+```
 npx lighthouse http://localhost:3000 --throttling-method=devtools --output=json --output-path=./lighthouse-report.json --only-categories=performance --chrome-flags="--headless"
 ```
 
 `--throttling-method=devtools` is important because Lighthouse applies network and CPU throttling through DevTools during the run and uses the values measured under those conditions. With `simulate`, results are estimated afterward using a model instead.
 
 | Metric | Before (`lighthouse-report-before.json`) | Current (`lighthouse-report.json`) | Comparison |
-| --- | ---: | ---: | --- |
+| --- | --- | --- | --- |
 | LCP (Largest Contentful Paint) | 3,08 s | 1,31 s | improved |
 | CLS (Cumulative Layout Shift) | 0 | 0 | same |
 | TBT (Total Blocking Time) | 31 ms | 72 ms | deteriorated |
 
 These results are based on single measurements. The values may fluctuate slightly with repeated measurements.
 
-LCP decreased significantly, while CLS remained at 0. TBT was higher in the current run. 
-For this project the TBT Value is being used instead of the INP. This is because a lighthouse CLI call performs only a simple page load.
-A proper INP Value can only be measured through actual user interactions taking place during the measurement. 
+LCP decreased significantly, while CLS remained at 0. TBT was higher in the current run.  
+For this project the TBT Value is being used instead of the INP. This is because a lighthouse CLI call performs only a simple page load.  
+A proper INP Value can only be measured through actual user interactions taking place during the measurement.  
 It is not measurable via Lighthouse in navigation mode.
 
 ## Architecture
