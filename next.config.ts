@@ -4,7 +4,8 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
-  agentRules: false
+  agentRules: false,
+  output: 'standalone'
 };
 
 export default nextConfig;
